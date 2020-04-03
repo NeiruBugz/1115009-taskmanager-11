@@ -1,7 +1,5 @@
 'use strict';
 
-const TASK_AMOUNT = 3;
-
 const mainContainer = document.querySelector(`.main`);
 const headerContainer = mainContainer.querySelector(`.main__control`);
 
@@ -38,82 +36,8 @@ const getMenuTemplate = () => (
   `
 );
 
-const getFilterTemplate = () => (
-  `
-  <section class="main__filter filter container">
-    <input
-      type="radio"
-      id="filter__all"
-      class="filter__input visually-hidden"
-      name="filter"
-      checked
-    />
-    <label for="filter__all" class="filter__label">
-      All <span class="filter__all-count">13</span></label
-    >
-    <input
-      type="radio"
-      id="filter__overdue"
-      class="filter__input visually-hidden"
-      name="filter"
-      disabled
-    />
-    <label for="filter__overdue" class="filter__label"
-      >Overdue <span class="filter__overdue-count">0</span></label
-    >
-    <input
-      type="radio"
-      id="filter__today"
-      class="filter__input visually-hidden"
-      name="filter"
-      disabled
-    />
-    <label for="filter__today" class="filter__label"
-      >Today <span class="filter__today-count">0</span></label
-    >
-    <input
-      type="radio"
-      id="filter__favorites"
-      class="filter__input visually-hidden"
-      name="filter"
-    />
-    <label for="filter__favorites" class="filter__label"
-      >Favorites <span class="filter__favorites-count">1</span></label
-    >
-    <input
-      type="radio"
-      id="filter__repeating"
-      class="filter__input visually-hidden"
-      name="filter"
-    />
-    <label for="filter__repeating" class="filter__label"
-      >Repeating <span class="filter__repeating-count">1</span></label
-    >
-    <input
-      type="radio"
-      id="filter__archive"
-      class="filter__input visually-hidden"
-      name="filter"
-    />
-    <label for="filter__archive" class="filter__label"
-      >Archive <span class="filter__archive-count">115</span></label
-    >
-  </section>
-  `
-);
-
-const getBoardTemplate = () => (
-  `
-  <section class="board container">
-    <div class="board__filter-list">
-      <a href="#" class="board__filter">SORT BY DEFAULT</a>
-      <a href="#" class="board__filter">SORT BY DATE up</a>
-      <a href="#" class="board__filter">SORT BY DATE down</a>
-    </div>
-
-    <div class="board__tasks"></div>
-  </section>
-  `
+const getLoadMoreButtonTemplate = () => (
+  `<button class="load-more" type="button">load more</button>`
 );
 
 const getTaskTemplate = () => (
@@ -163,7 +87,6 @@ const getTaskTemplate = () => (
   </article>
   `
 );
-
 const getTaskEditTemplate = () => (
   `
   <article class="card card--edit card--yellow card--repeat">
@@ -366,9 +289,96 @@ const getTaskEditTemplate = () => (
   `
 );
 
-const getLoadMoreButtonTemplate = () => (
-  `<button class="load-more" type="button">load more</button>`
+const getFilterTemplate = () => (
+  `
+  <section class="main__filter filter container">
+    <input
+      type="radio"
+      id="filter__all"
+      class="filter__input visually-hidden"
+      name="filter"
+      checked
+    />
+    <label for="filter__all" class="filter__label">
+      All <span class="filter__all-count">13</span></label
+    >
+    <input
+      type="radio"
+      id="filter__overdue"
+      class="filter__input visually-hidden"
+      name="filter"
+      disabled
+    />
+    <label for="filter__overdue" class="filter__label"
+      >Overdue <span class="filter__overdue-count">0</span></label
+    >
+    <input
+      type="radio"
+      id="filter__today"
+      class="filter__input visually-hidden"
+      name="filter"
+      disabled
+    />
+    <label for="filter__today" class="filter__label"
+      >Today <span class="filter__today-count">0</span></label
+    >
+    <input
+      type="radio"
+      id="filter__favorites"
+      class="filter__input visually-hidden"
+      name="filter"
+    />
+    <label for="filter__favorites" class="filter__label"
+      >Favorites <span class="filter__favorites-count">1</span></label
+    >
+    <input
+      type="radio"
+      id="filter__repeating"
+      class="filter__input visually-hidden"
+      name="filter"
+    />
+    <label for="filter__repeating" class="filter__label"
+      >Repeating <span class="filter__repeating-count">1</span></label
+    >
+    <input
+      type="radio"
+      id="filter__archive"
+      class="filter__input visually-hidden"
+      name="filter"
+    />
+    <label for="filter__archive" class="filter__label"
+      >Archive <span class="filter__archive-count">115</span></label
+    >
+  </section>
+  `
 );
+
+const getBoardTemplate = () => {
+  let taskList = ``;
+  const task = getTaskTemplate();
+  const editableTask = getTaskEditTemplate();
+  const showMoreButton = getLoadMoreButtonTemplate();
+
+  const TASK_AMOUNT = 3;
+
+  for (let i = 0; i < TASK_AMOUNT; i++) {
+    taskList = `${taskList}${task}`;
+  }
+
+  return (
+    `
+    <section class="board container">
+      <div class="board__filter-list">
+        <a href="#" class="board__filter">SORT BY DEFAULT</a>
+        <a href="#" class="board__filter">SORT BY DATE up</a>
+        <a href="#" class="board__filter">SORT BY DATE down</a>
+      </div>
+
+      <div class="board__tasks">${editableTask}${taskList}</div>
+      ${showMoreButton}
+    </section>
+    `);
+};
 
 const render = (container, markup, position = `beforeEnd`) => {
   container.insertAdjacentHTML(position, markup);
@@ -378,13 +388,6 @@ render(headerContainer, getMenuTemplate());
 render(mainContainer, getFilterTemplate());
 render(mainContainer, getBoardTemplate());
 
+// render(taskListContainer, getTaskEditTemplate());
 
-const taskListContainer = mainContainer.querySelector(`.board__tasks`);
-const boardContainer = mainContainer.querySelector(`.board`);
-render(taskListContainer, getTaskEditTemplate());
-
-for (let i = 0; i < TASK_AMOUNT; i++) {
-  render(taskListContainer, getTaskTemplate());
-}
-
-render(boardContainer, getLoadMoreButtonTemplate());
+// render(boardContainer, getLoadMoreButtonTemplate());
